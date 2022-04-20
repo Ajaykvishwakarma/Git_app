@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            GITHUB
+        </title>
+        <link rel = "stylesheet" href = "styles/home.css">
+        <style>
+
+
+        </style>
+    </head>
+    <body>
+        <div id = "container"></div>
+        <div id = "container1">
+            <div>
+                <div>
+                    <img src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfb_mGGQfD8gPJdLwzVGdMH5B_WxftqIiisg&usqp=CAU" id = "prof_image">
+                </div>
+                <div><h4 id= "pro_name">User_Id...</h4>
+                       
+                </div>
+            </div>
+            <div id = "repos_data">
+
+            </div>
+        </div>
+    
+
+    </body>
+</html>
+<script type = "module">
+
+    import getUser from "./scripts/getUser.js";
+
+
+
+    import navbar from "./components/navbar.js";
+    //console.log(navbar)
+
+    let container = document.getElementById("container");
+
+    container.innerHTML = navbar();
+
+    let input = document.getElementById("search-input")
+    input.addEventListener("keypress",searchUser)
+
+    var response;
+
+    // let btn = document.getElementById("repo_btn")
+
+    // btn.addEventListener("click", getUserRepo)
+
+    async function searchUser(event) {
+
+        
+
+        if(event.key === "Enter")
+        {
+            
+        let query = input.value;
+        
+
+         response = await getUser(query) // by default
+        //  console.log(response.repos_url)
+         getUserRepo()
+        
+
+        let { avatar_url, login } = response;
+
+
+        document.getElementById("profile-img").src = avatar_url;
+        document.getElementById("prof_image").src = avatar_url;
+        document.getElementById("pro_name").innerHTML = login;
+
+        } 
+    }
+
+   
+    async function getUserRepo(){
+        try{
+
+        let res = await fetch(response.repos_url)
+        let repo_data = await res.json()
+        console.log(repo_data)
+        appendRepos(repo_data)
+        }
+        catch(err){
+
+            console.log(err)
+        }
+
+    }
+
+    let repos_div = document.getElementById("repos_data")
+
+    function  appendRepos(repo_data){
+
+        repos_div.innerHTML = null;
+        let div1 = document.createElement("div")
+            div1.setAttribute("id", "div1")
+
+            div1.innerHTML = "Popular repositories";
+            let main_div = document.createElement("div")
+            main_div.setAttribute("id","main_div")
+            
+    repo_data.forEach((elem) => {
+ 
+    
+
+       
+            let div2 = document.createElement("div")
+            div2.setAttribute("id", "div2")
+
+            let inner_D = document.createElement("div")
+            inner_D.setAttribute("class","inner_d")
+
+
+            let h = document.createElement("h4")
+            h.innerText = elem.name;
+
+            let btn = document.createElement("button");
+            btn.innerText = elem.visibility;
+
+            let lang = document.createElement("p")
+            lang.innerText = elem.language;
+
+
+          
+
+            inner_D.append(h,btn)
+            div2.append(inner_D,lang)
+            main_div.append(div2)
+            repos_div.append(div1, main_div)
+        })
+
+    }
+</script>
